@@ -1,0 +1,27 @@
+# Ignore environment variables
+.env
+
+# Ignore Go build files
+bin/
+pkg/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Ignore Go test binaries
+*.test
+
+# Ignore IDE/editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignore dependency directories
+vendor/
+
+# Ignore log files
+*.log
