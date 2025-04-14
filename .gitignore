@@ -3,7 +3,7 @@
 
 # Ignore Go build files
 bin/
-pkg/
+# pkg/
 *.exe
 *.exe~
 *.dll
