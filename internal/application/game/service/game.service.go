@@ -3,15 +3,18 @@ package game_service
 import (
 	game_domain "github.com/GoReactors/backend-learning/internal/application/game/domain"
 	"github.com/GoReactors/backend-learning/internal/port"
+	"github.com/GoReactors/backend-learning/pkg/logger"
 )
 
 type GameService struct {
-	repo port.GameRepositoryPort
+	repo   port.GameRepositoryPort
+	logger logger.Logger
 }
 
-func NewGameService(repo port.GameRepositoryPort) *GameService {
+func NewGameService(repo port.GameRepositoryPort, logger logger.Logger) *GameService {
 	return &GameService{
-		repo: repo,
+		repo:   repo,
+		logger: logger,
 	}
 }
 
@@ -21,6 +24,7 @@ func (s *GameService) Create(name string) (game_domain.Game, error) {
 	if err != nil {
 		return game_domain.Game{}, err
 	}
+	s.logger.Info("Game created", logger.Field{Key: "name", Value: name})
 	return game, nil
 }
 

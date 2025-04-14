@@ -1,6 +1,6 @@
 package config
 
 type LoggingConfig struct {
-	Level       string `yaml:"level" env:"LOG_LEVEL" envDefault:"info"`
-	Development bool   `yaml:"development" env:"LOG_DEV_MODE" envDefault:"false"`
+	Level       string `envconfig:"LOG_LEVEL" required:"false" default:"info"`
+	Development bool   `envconfig:"LOG_DEV_MODE" required:"false" default:"false"`
 }

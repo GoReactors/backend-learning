@@ -2,11 +2,13 @@ package config
 
 import (
 	"log"
+
 	"github.com/kelseyhightower/envconfig"
 )
 
 type Config struct {
-	GinAppPort int `envconfig:"GIN_APP_PORT" required:"true" default:"8080" min:"1000" max:"9999"`
+	GinAppPort int `envconfig:"GIN_APP_PORT" required:"false" default:"8080" min:"1000" max:"9999"`
+	LoggingConfig
 }
 
 func LoadConfig() Config {

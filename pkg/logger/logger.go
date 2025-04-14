@@ -57,7 +57,6 @@ func Initialize(cfg config.LoggingConfig) {
 	once.Do(func() {
 		zapCfg := zap.NewProductionConfig()
 
-		// Customize config based on environment
 		if cfg.Development {
 			zapCfg = zap.NewDevelopmentConfig()
 			zapCfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
@@ -84,4 +83,8 @@ func Initialize(cfg config.LoggingConfig) {
 
 		globalLogger = &zapLogger{zap: zLogger}
 	})
+}
+
+func Global() Logger {
+	return globalLogger
 }
