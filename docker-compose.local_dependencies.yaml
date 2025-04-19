@@ -1,21 +1,23 @@
 services:
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
     command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
       - ./config/otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml
     ports:
       - "4318:4318" # OTLP HTTP
-      - "55681:55681"
-      - "4317:4317" # OTLP gRPC
+    depends_on:
+      - jaeger
     networks:
       - go_boilerplate_external_network
 
   jaeger:
     image: jaegertracing/all-in-one:latest
+    container_name: jaeger
     ports:
       - "16686:16686" # Jaeger UI
-      - "14250:14250" # Jaeger gRPC
+      - "4317:4317" # Jaeger collector port
     networks:
       - go_boilerplate_external_network
 
