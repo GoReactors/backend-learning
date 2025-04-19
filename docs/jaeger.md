@@ -91,6 +91,111 @@ A trace represents the data or execution path through the system. It can be thou
 
 Baggage is arbitrary user-defined metadata (key-value pairs) that can be attached to distributed context and propagated by the tracing SDKs.
 
+### Distributed Tracing
+
+Tracking a request across multiple services.
+
+### Span
+
+A single operation (e.g., an API call, database query). Spans have:
+
+- Start & end time.
+- Tags (metadata like HTTP status code).
+- Logs (events during the span).
+
+### Trace
+
+A collection of spans representing the full journey of a request.
+
+### Context Propagation
+
+Passing trace/span IDs between services to link them.
+
+### Jaeger Components:
+
+- **Agent**: Collects spans and sends them to Jaeger backend.
+- **Collector**: Receives spans, processes them, and stores them.
+- **Query**: Retrieves traces for the UI.
+- **Storage**: Database (e.g., Elasticsearch, Cassandra) for traces.
+- **UI**: Visualizes traces.
+
+## How Jaeger Works
+
+### Instrumentation
+
+Code is modified to create/spans (using libraries like OpenTelemetry).
+
+### Context Propagation
+
+When Service A calls Service B, trace IDs are passed (e.g., via HTTP headers).
+
+### Data Collection
+
+Spans are sent to the Jaeger backend.
+
+### Storage/Querying
+
+Traces are stored and can be queried in the UI.
+
+## Example in a Small System
+
+Imagine 2 services:
+
+- **Frontend** (Node.js) → Calls **Backend** (Python).
+
+### Step 1: Instrumentation
+
+- Both services use OpenTelemetry/Jaeger client libraries.
+- When a request hits the frontend, it creates a **trace** and starts a **span**.
+- When the frontend calls the backend, it passes the trace ID (e.g., via HTTP headers).
+
+### Step 2: Data Flow
+
+1. Frontend:
+
+```javascript
+const span = tracer.startSpan("handle_request");
+span.setTag("http.method", "GET");
+// Call backend
+const response = await fetchBackend();
+span.finish();
+```
+
+2. Backend (Python):
+
+```python
+with tracer.start_span('process_data') as span:
+    span.log_kv({'event': 'data_processed'})
+```
+
+3. Both services send spans to the Jaeger Agent (running locally).
+
+### Step 3: Visualization
+
+- Jaeger UI shows the full trace:
+
+```
+Trace: [Frontend Span] ────→ [Backend Span]
+```
+
+- You can see latency, errors, and metadata.
+
+## Implementation Steps (Simple Setup)
+
+1. **Run Jaeger locally** (Docker):
+
+```bash
+docker run -d --name jaeger \
+  -p 6831:6831/udp -p 16686:16686 \
+  jaegertracing/all-in-one
+```
+
+- UI: http://localhost:16686
+
+2. **Instrument your services** (e.g., Node.js/Python with OpenTelemetry).
+
+3. **Make requests** and check Jaeger UI for traces.
+
 ## Architecture
 
 Jaeger v2 is designed to be a versatile and flexible tracing platform. It can be deployed as a single binary that can be configured to perform different **roles** within the Jaeger architecture, such as:

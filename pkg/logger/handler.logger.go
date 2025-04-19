@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"context"
 	"sync"
 
 	"github.com/GoReactors/backend-learning/config"
@@ -35,6 +36,11 @@ func (l *zapLogger) Error(msg string, fields ...Field) {
 
 func (l *zapLogger) Fatal(msg string, fields ...Field) {
 	l.zap.Fatal(msg, toZapFields(fields)...)
+}
+
+func (l *zapLogger) InfoCtx(ctx context.Context, msg string, fields ...Field) {
+	fields = append(fields, TraceFieldsFromContext(ctx)...)
+	l.Info(msg, fields...)
 }
 
 func (l *zapLogger) With(fields ...Field) Logger {
@@ -83,6 +89,13 @@ func Initialize(cfg config.LoggingConfig) {
 
 		globalLogger = &zapLogger{zap: zLogger}
 	})
+}
+
+func FirstSyncInMain(l Logger) {
+	if err := l.Sync(); err != nil {
+		// Don't panic if sync fails (common when writing to stdout)
+		l.Error("failed to sync logger", Field{Key: "error", Value: err})
+	}
 }
 
 func Global() Logger {

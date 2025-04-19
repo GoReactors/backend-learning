@@ -1,8 +1,12 @@
 package port
 
-import game_domain "github.com/GoReactors/backend-learning/internal/application/game/domain"
+import (
+	"context"
 
-type GameRepositoryPort interface {
-	Get(id string) (game_domain.Game, error)
-	Save(*game_domain.Game) error
+	game_domain "github.com/GoReactors/backend-learning/internal/application/game/domain"
+)
+
+type GameRepository interface {
+	Save(ctx context.Context, game *game_domain.Game) (*game_domain.Game, error)
+	FindByID(ctx context.Context, id string) (*game_domain.Game, error)
 }

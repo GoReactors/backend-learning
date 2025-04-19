@@ -5,13 +5,15 @@ import (
 )
 
 type Game struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID    string
+	Title string
+	Mode  string
 }
 
-func NewGame(name string) Game {
+func NewGame(title, mode string) Game {
 	return Game{
-		ID:   uuid.New().String(),
-		Name: name,
+		ID:    uuid.New().String(),
+		Title: title,
+		Mode:  mode,
 	}
 }

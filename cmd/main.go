@@ -1,31 +1,26 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/GoReactors/backend-learning/config"
-	"github.com/GoReactors/backend-learning/internal/adapter"
+	httpadapter "github.com/GoReactors/backend-learning/internal/adapter/http"
+	repositoryadapter "github.com/GoReactors/backend-learning/internal/adapter/repository"
 	game_service "github.com/GoReactors/backend-learning/internal/application/game/service"
 	"github.com/GoReactors/backend-learning/pkg/logger"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		panic("Error loading .env file" + err.Error())
-	}
-
+	// Load ENVs
 	cfg := config.LoadConfig()
 
+	// Init Logger
 	logger.Initialize(cfg.LoggingConfig)
-	defer func() {
-		if err := logger.Global().Sync(); err != nil {
-			// Don't panic if sync fails (common when writing to stdout)
-			logger.Global().Error("failed to sync logger", logger.Field{Key: "error", Value: err})
-		}
-	}()
+	defer logger.FirstSyncInMain(logger.Global())
 	log := logger.Global().With(logger.Field{Key: "component", Value: "main"})
 
-	gameRepository := adapter.NewGameRepositoryAdapter()
+	// Init Services
+	gameRepository := repositoryadapter.NewInMemoryGameRepository()
 	gameService := game_service.NewGameService(
 		gameRepository,
 		logger.Global().With(logger.Field{
@@ -33,8 +28,8 @@ func main() {
 			Value: "game_service",
 		}),
 	)
-	gameAPIAdapter := adapter.NewGameAPIAdapter(gameService)
 
-	log.Info("starting application initialization")
-	gameAPIAdapter.Run(cfg)
+	// start HTTP server
+	router := httpadapter.NewServer(cfg, gameService, log)
+	router.Run(fmt.Sprintf(":%v", cfg.GinAppPort))
 }
