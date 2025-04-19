@@ -6,6 +6,7 @@ import (
 	"github.com/GoReactors/backend-learning/config"
 	httpadapter "github.com/GoReactors/backend-learning/internal/adapter/http"
 	repositoryadapter "github.com/GoReactors/backend-learning/internal/adapter/repository"
+	"github.com/GoReactors/backend-learning/internal/adapter/tracing"
 	game_service "github.com/GoReactors/backend-learning/internal/application/game/service"
 	"github.com/GoReactors/backend-learning/pkg/logger"
 )
@@ -18,6 +19,9 @@ func main() {
 	logger.Initialize(cfg.LoggingConfig)
 	defer logger.FirstSyncInMain(logger.Global())
 	log := logger.Global().With(logger.Field{Key: "component", Value: "main"})
+
+	// Init Tracer
+	tracing.InitTracer(cfg, logger.Global().With(logger.Field{Key: "component", Value: "tracing"}))
 
 	// Init Services
 	gameRepository := repositoryadapter.NewInMemoryGameRepository()

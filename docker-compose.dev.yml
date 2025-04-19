@@ -1,0 +1,18 @@
+services:
+  game-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: game-service
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    networks:
+      - go_boilerplate_external_network
+
+networks:
+  go_boilerplate_external_network:
+    external: true

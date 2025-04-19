@@ -1,0 +1,19 @@
+FROM golang:1.24-alpine
+
+WORKDIR /app
+
+# Install dependencies
+RUN apk add --no-cache git curl bash build-base
+
+# Install Air (hot reload)
+RUN go install github.com/air-verse/air@latest
+
+# Install Delve (debugger)
+RUN go install github.com/go-delve/delve/cmd/dlv@latest
+
+ENV PATH="/go/bin:${PATH}"
+
+# Expose app + debug ports
+EXPOSE 8080 40000
+
+CMD ["air"]
