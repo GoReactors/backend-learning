@@ -5,17 +5,17 @@ import (
 
 	game_domain "github.com/GoReactors/backend-learning/internal/application/game/domain"
 	"github.com/GoReactors/backend-learning/internal/port"
+	tracingport "github.com/GoReactors/backend-learning/internal/port/tracer"
 	"github.com/GoReactors/backend-learning/pkg/logger"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
-	"go.opentelemetry.io/otel/trace"
 )
 
 type GameService struct {
 	repo   port.GameRepository
 	logger logger.Logger
-	trace  trace.Tracer
+	tracer tracingport.Tracer
 }
 
 type CreateGameParams struct {
@@ -23,10 +23,11 @@ type CreateGameParams struct {
 	Mode  string
 }
 
-func NewGameService(repo port.GameRepository, log logger.Logger) *GameService {
+func NewGameService(repo port.GameRepository, log logger.Logger, tracer tracingport.Tracer) *GameService {
 	return &GameService{
 		repo:   repo,
 		logger: log,
+		tracer: tracer,
 	}
 }
 

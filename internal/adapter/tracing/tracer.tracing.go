@@ -1,4 +1,4 @@
-package tracing
+package tracingadapter
 
 import (
 	"context"
@@ -25,6 +25,10 @@ func NewTracer(name string) port.Tracer {
 
 func (t *TracerAdapter) InitTracer() {
 	t.tracer = otel.Tracer(t.name)
+}
+
+func (t *TracerAdapter) GetTracer() trace.Tracer {
+	return t.tracer
 }
 
 func (t *TracerAdapter) StartSpan(ctx context.Context, span_name string) (context.Context, trace.Span) {
