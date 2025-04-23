@@ -4,21 +4,20 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"go.opentelemetry.io/otel"
 
 	game_service "github.com/GoReactors/backend-learning/internal/application/game/service"
+	tracingport "github.com/GoReactors/backend-learning/internal/port/tracer"
 	"github.com/GoReactors/backend-learning/pkg/logger"
 )
-
-var tracer = otel.Tracer("game-handler")
 
 type GameHandler struct {
 	svc    *game_service.GameService
 	logger logger.Logger
+	tracer tracingport.Tracer
 }
 
-func RegisterRoutesGame(router *gin.Engine, svc *game_service.GameService, l logger.Logger) {
-	h := &GameHandler{svc: svc, logger: l}
+func RegisterRoutesGame(router *gin.Engine, svc *game_service.GameService, l logger.Logger, tracer tracingport.Tracer) {
+	h := &GameHandler{svc: svc, logger: l, tracer: tracer}
 
 	gameGroup := router.Group("/games")
 	{
@@ -34,7 +33,7 @@ type CreateGameRequest struct {
 
 func (h *GameHandler) CreateGame(c *gin.Context) {
 	ctx := c.Request.Context()
-	ctx, span := tracer.Start(ctx, "HTTP CreateGame")
+	ctx, span := h.tracer.StartSpan(ctx, "HTTP CreateGame")
 	defer span.End()
 
 	var req CreateGameRequest
@@ -59,7 +58,7 @@ func (h *GameHandler) CreateGame(c *gin.Context) {
 
 func (h *GameHandler) GetGame(c *gin.Context) {
 	ctx := c.Request.Context()
-	ctx, span := tracer.Start(ctx, "HTTP GetGame")
+	ctx, span := h.tracer.StartSpan(ctx, "HTTP GetGame")
 	defer span.End()
 
 	id := c.Param("id")

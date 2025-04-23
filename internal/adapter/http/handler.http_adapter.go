@@ -2,6 +2,7 @@ package httpadapter
 
 import (
 	"github.com/GoReactors/backend-learning/config"
+	tracingadapter "github.com/GoReactors/backend-learning/internal/adapter/tracing"
 	game_service "github.com/GoReactors/backend-learning/internal/application/game/service"
 	"github.com/GoReactors/backend-learning/pkg/logger"
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,7 @@ func NewServer(config config.Config, gameService *game_service.GameService, l lo
 	router.Use(logger.GinZapMiddleware(l, config.ServiceName, config.Environment))
 
 	// Register Routes
-	RegisterRoutesGame(router, gameService, l)
+	RegisterRoutesGame(router, gameService, l, tracingadapter.NewTracer(tracingadapter.GAME_HTTP_HANDLER))
 
 	return router
 }
