@@ -13,14 +13,11 @@ COPY . .
 RUN go build -o game-server ./cmd/main.go
 
 # ---- Run stage ----
-FROM alpine:latest
+FROM scratch:latest
 
 WORKDIR /app
 
 COPY --from=builder /app/game-server .
-
-# Copy any required static/config files here (optional)
-# COPY ./config.yaml ./config.yaml
 
 # Use a minimal user (optional for security)
 RUN adduser -D appuser
