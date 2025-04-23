@@ -19,12 +19,8 @@ func NewTracer(name string) port.Tracer {
 	tracer_adapter := &TracerAdapter{
 		name: name,
 	}
-	tracer_adapter.InitTracer()
+	tracer_adapter.tracer = otel.Tracer(name)
 	return tracer_adapter
-}
-
-func (t *TracerAdapter) InitTracer() {
-	t.tracer = otel.Tracer(t.name)
 }
 
 func (t *TracerAdapter) GetTracer() trace.Tracer {
