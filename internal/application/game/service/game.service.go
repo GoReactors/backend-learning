@@ -7,8 +7,6 @@ import (
 	"github.com/GoReactors/backend-learning/internal/port"
 	tracingport "github.com/GoReactors/backend-learning/internal/port/tracer"
 	"github.com/GoReactors/backend-learning/pkg/logger"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 )
 
@@ -32,13 +30,11 @@ func NewGameService(repo port.GameRepository, log logger.Logger, tracer tracingp
 }
 
 func (s *GameService) CreateGame(ctx context.Context, params CreateGameParams) (*game_domain.Game, error) {
-	ctx, span := otel.Tracer("game-service").Start(ctx, "GameService.CreateGame")
+	ctx, span := s.tracer.StartSpan(ctx, "GameService.CreateGame")
 	defer span.End()
 
-	span.SetAttributes(
-		attribute.String("game.title", params.Title),
-		attribute.String("game.mode", params.Mode),
-	)
+	s.tracer.SetAttribute(span, "game.title", params.Title)
+	s.tracer.SetAttribute(span, "game.mode", params.Mode)
 
 	game := game_domain.NewGame(params.Title, params.Mode)
 	saved, err := s.repo.Save(ctx, &game)
@@ -56,10 +52,10 @@ func (s *GameService) CreateGame(ctx context.Context, params CreateGameParams) (
 }
 
 func (s *GameService) GetGame(ctx context.Context, id string) (*game_domain.Game, error) {
-	ctx, span := otel.Tracer("game-service").Start(ctx, "GameService.GetGame")
+	ctx, span := s.tracer.StartSpan(ctx, "GameService.GetGame")
 	defer span.End()
 
-	span.SetAttributes(attribute.String("game.id", id))
+	s.tracer.SetAttribute(span, "game.id", id)
 
 	game, err := s.repo.FindByID(ctx, id)
 	if err != nil {
