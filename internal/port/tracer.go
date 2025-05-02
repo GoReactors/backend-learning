@@ -6,7 +6,9 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-type Tracer interface {
-	StartSpan(ctx context.Context, name string) (context.Context, trace.Span)
-	SetAttribute(span trace.Span, key string, value any)
+type Tracing interface {
+	StartSpan(ctx context.Context, name string) (context.Context, Span)
+	SetAttribute(span Span, key string, value any)
 }
+
+type Span = trace.Span

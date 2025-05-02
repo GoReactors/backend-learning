@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	porttracing "github.com/GoReactors/backend-learning/internal/port"
+	"github.com/GoReactors/backend-learning/internal/port"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -15,7 +15,7 @@ type OTELTracerAdapter struct {
 	tracer trace.Tracer
 }
 
-func NewTracer(name string) porttracing.Tracer {
+func NewTracer(name string) port.Tracing {
 	tracer_adapter := &OTELTracerAdapter{
 		name: name,
 	}

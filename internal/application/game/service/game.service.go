@@ -12,7 +12,7 @@ import (
 type GameService struct {
 	repo   port.GameRepository
 	logger logger.Logger
-	tracer port.Tracer
+	tracer port.Tracing
 }
 
 type CreateGameParams struct {
@@ -20,7 +20,7 @@ type CreateGameParams struct {
 	Mode  string
 }
 
-func NewGameService(repo port.GameRepository, log logger.Logger, tracer port.Tracer) *GameService {
+func NewGameService(repo port.GameRepository, log logger.Logger, tracer port.Tracing) *GameService {
 	return &GameService{
 		repo:   repo,
 		logger: log,

@@ -12,10 +12,10 @@ import (
 type InMemoryGameRepository struct {
 	mu     sync.RWMutex
 	store  map[string]*game_domain.Game
-	tracer port.Tracer
+	tracer port.Tracing
 }
 
-func NewInMemoryGameRepository(tracer port.Tracer) port.GameRepository {
+func NewInMemoryGameRepository(tracer port.Tracing) port.GameRepository {
 	return &InMemoryGameRepository{
 		store:  make(map[string]*game_domain.Game),
 		tracer: tracer,

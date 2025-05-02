@@ -13,10 +13,10 @@ import (
 type GameHandler struct {
 	svc    *game_service.GameService
 	logger logger.Logger
-	tracer port.Tracer
+	tracer port.Tracing
 }
 
-func NewGameHandler(svc *game_service.GameService, l logger.Logger, tracer port.Tracer) port.RouteRegistrar {
+func NewGameHandler(svc *game_service.GameService, l logger.Logger, tracer port.Tracing) port.RouteRegistrar {
 	return &GameHandler{svc: svc, logger: l, tracer: tracer}
 }
 
