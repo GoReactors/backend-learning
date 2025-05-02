@@ -8,7 +8,9 @@ import (
 	repositoryadapter "github.com/GoReactors/backend-learning/internal/adapter/repository"
 	tracingadapter "github.com/GoReactors/backend-learning/internal/adapter/tracing"
 	game_service "github.com/GoReactors/backend-learning/internal/application/game/service"
+	"github.com/GoReactors/backend-learning/internal/port"
 	"github.com/GoReactors/backend-learning/pkg/logger"
+	"github.com/GoReactors/backend-learning/pkg/server"
 	pkgtracing "github.com/GoReactors/backend-learning/pkg/tracing"
 )
 
@@ -21,7 +23,7 @@ func main() {
 	defer logger.FirstSyncInMain(logger.Global())
 	log := logger.Global().With(logger.Field{Key: "component", Value: "main"})
 
-	// Init Tracer
+	// Init OTEL Tracer
 	pkgtracing.InitOTELTracer(cfg, logger.Global().With(logger.Field{Key: "component", Value: "tracing"}))
 
 	// Init Services
@@ -36,6 +38,14 @@ func main() {
 	)
 
 	// start HTTP server
-	router := httpadapter.NewServer(cfg, gameService, log)
+	// -- Init Handlers
+	gameHandler := httpadapter.NewGameHandler(gameService, log, tracingadapter.NewTracer(tracingadapter.GAME_HTTP_HANDLER))
+
+	// -- Init Server
+	router := server.NewServer(cfg, log, []port.RouteRegistrar{
+		gameHandler,
+	})
+
+	// -- Run Server
 	router.Run(fmt.Sprintf(":%v", cfg.GinAppPort))
 }

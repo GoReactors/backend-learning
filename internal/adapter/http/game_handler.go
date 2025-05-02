@@ -16,13 +16,15 @@ type GameHandler struct {
 	tracer port.Tracer
 }
 
-func RegisterRoutesGame(router *gin.Engine, svc *game_service.GameService, l logger.Logger, tracer port.Tracer) {
-	h := &GameHandler{svc: svc, logger: l, tracer: tracer}
+func NewGameHandler(svc *game_service.GameService, l logger.Logger, tracer port.Tracer) port.RouteRegistrar {
+	return &GameHandler{svc: svc, logger: l, tracer: tracer}
+}
 
+func (gh *GameHandler) RegisterRoutes(router *gin.RouterGroup) {
 	gameGroup := router.Group("/games")
 	{
-		gameGroup.POST("/", h.CreateGame)
-		gameGroup.GET("/:id", h.GetGame)
+		gameGroup.POST("/", gh.CreateGame)
+		gameGroup.GET("/:id", gh.GetGame)
 	}
 }
 
