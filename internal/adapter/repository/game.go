@@ -7,16 +7,15 @@ import (
 
 	game_domain "github.com/GoReactors/backend-learning/internal/application/game/domain"
 	"github.com/GoReactors/backend-learning/internal/port"
-	tracingport "github.com/GoReactors/backend-learning/internal/port/tracer"
 )
 
 type InMemoryGameRepository struct {
 	mu     sync.RWMutex
 	store  map[string]*game_domain.Game
-	tracer tracingport.Tracer
+	tracer port.Tracer
 }
 
-func NewInMemoryGameRepository(tracer tracingport.Tracer) port.GameRepository {
+func NewInMemoryGameRepository(tracer port.Tracer) port.GameRepository {
 	return &InMemoryGameRepository{
 		store:  make(map[string]*game_domain.Game),
 		tracer: tracer,

@@ -1,4 +1,4 @@
-package tracingadapter
+package tracing
 
 import (
 	"context"
@@ -17,7 +17,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
 )
 
-func InitTracer(cfg config.Config, l logger.Logger) (*sdktrace.TracerProvider, error) {
+func InitOTELTracer(cfg config.Config, l logger.Logger) (*sdktrace.TracerProvider, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 

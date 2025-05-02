@@ -9,6 +9,7 @@ import (
 	tracingadapter "github.com/GoReactors/backend-learning/internal/adapter/tracing"
 	game_service "github.com/GoReactors/backend-learning/internal/application/game/service"
 	"github.com/GoReactors/backend-learning/pkg/logger"
+	pkgtracing "github.com/GoReactors/backend-learning/pkg/tracing"
 )
 
 func main() {
@@ -21,7 +22,7 @@ func main() {
 	log := logger.Global().With(logger.Field{Key: "component", Value: "main"})
 
 	// Init Tracer
-	tracingadapter.InitTracer(cfg, logger.Global().With(logger.Field{Key: "component", Value: "tracing"}))
+	pkgtracing.InitOTELTracer(cfg, logger.Global().With(logger.Field{Key: "component", Value: "tracing"}))
 
 	// Init Services
 	gameRepository := repositoryadapter.NewInMemoryGameRepository(tracingadapter.NewTracer(tracingadapter.GAME_REPO))

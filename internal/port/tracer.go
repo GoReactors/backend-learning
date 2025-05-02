@@ -1,4 +1,4 @@
-package tracingport
+package port
 
 import (
 	"context"
@@ -7,7 +7,6 @@ import (
 )
 
 type Tracer interface {
-	GetTracer() trace.Tracer
 	StartSpan(ctx context.Context, name string) (context.Context, trace.Span)
 	SetAttribute(span trace.Span, key string, value any)
 }

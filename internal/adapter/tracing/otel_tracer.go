@@ -4,36 +4,32 @@ import (
 	"context"
 	"fmt"
 
-	port "github.com/GoReactors/backend-learning/internal/port/tracer"
+	porttracing "github.com/GoReactors/backend-learning/internal/port"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 )
 
-type TracerAdapter struct {
+type OTELTracerAdapter struct {
 	name   string
 	tracer trace.Tracer
 }
 
-func NewTracer(name string) port.Tracer {
-	tracer_adapter := &TracerAdapter{
+func NewTracer(name string) porttracing.Tracer {
+	tracer_adapter := &OTELTracerAdapter{
 		name: name,
 	}
 	tracer_adapter.tracer = otel.Tracer(name)
 	return tracer_adapter
 }
 
-func (t *TracerAdapter) GetTracer() trace.Tracer {
-	return t.tracer
-}
-
-func (t *TracerAdapter) StartSpan(ctx context.Context, span_name string) (context.Context, trace.Span) {
+func (t *OTELTracerAdapter) StartSpan(ctx context.Context, span_name string) (context.Context, trace.Span) {
 	ctx, span := t.tracer.Start(ctx, span_name)
 	span.SetAttributes(attribute.String("service.name", t.name))
 	return ctx, span
 }
 
-func (t *TracerAdapter) SetAttribute(span trace.Span, key string, value any) {
+func (t *OTELTracerAdapter) SetAttribute(span trace.Span, key string, value any) {
 	switch v := value.(type) {
 	case string:
 		span.SetAttributes(attribute.String(key, v))

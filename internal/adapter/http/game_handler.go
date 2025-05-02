@@ -6,17 +6,17 @@ import (
 	"github.com/gin-gonic/gin"
 
 	game_service "github.com/GoReactors/backend-learning/internal/application/game/service"
-	tracingport "github.com/GoReactors/backend-learning/internal/port/tracer"
+	"github.com/GoReactors/backend-learning/internal/port"
 	"github.com/GoReactors/backend-learning/pkg/logger"
 )
 
 type GameHandler struct {
 	svc    *game_service.GameService
 	logger logger.Logger
-	tracer tracingport.Tracer
+	tracer port.Tracer
 }
 
-func RegisterRoutesGame(router *gin.Engine, svc *game_service.GameService, l logger.Logger, tracer tracingport.Tracer) {
+func RegisterRoutesGame(router *gin.Engine, svc *game_service.GameService, l logger.Logger, tracer port.Tracer) {
 	h := &GameHandler{svc: svc, logger: l, tracer: tracer}
 
 	gameGroup := router.Group("/games")
